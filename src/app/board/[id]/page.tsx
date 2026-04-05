@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_COLORS, type Post, type Comment } from "@/lib/types";
 import CommentForm from "@/components/CommentForm";
+import PostActions from "@/components/PostActions";
 
 export default async function PostDetailPage({
   params,
@@ -81,6 +82,9 @@ export default async function PostDetailPage({
             <div className="text-gray-600 leading-relaxed whitespace-pre-wrap">
               {typedPost.content}
             </div>
+
+            {/* 編集・削除ボタン（自分の投稿のみ表示） */}
+            <PostActions postId={typedPost.id} authorId={typedPost.author_id} />
           </article>
 
           {/* コメントセクション */}
