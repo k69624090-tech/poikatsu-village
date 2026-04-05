@@ -70,3 +70,13 @@ export const DANGER_LEVEL_COLORS: Record<Review["danger_level"], string> = {
   中: "bg-orange-100 text-orange-700",
   高: "bg-red-100 text-red-700",
 };
+
+// レビューコメントの型定義
+export type ReviewComment = {
+  id: string;
+  review_id: string;
+  content: string;
+  author_id: string;
+  author_email: string;
+  created_at: string;
+};

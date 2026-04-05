@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
-import { DIFFICULTY_COLORS, DANGER_LEVEL_COLORS, type Review } from "@/lib/types";
+import { DIFFICULTY_COLORS, DANGER_LEVEL_COLORS, type Review, type ReviewComment } from "@/lib/types";
 import StarRating from "@/components/StarRating";
 import ReviewActions from "@/components/ReviewActions";
+import ReviewCommentForm from "@/components/ReviewCommentForm";
+import ReviewCommentItem from "@/components/ReviewCommentItem";
 
 export default async function ReviewDetailPage({
   params,
@@ -26,6 +28,15 @@ export default async function ReviewDetailPage({
   }
 
   const r = review as Review;
+
+  // コメント一覧を取得（新しい順）
+  const { data: reviewComments } = await supabase
+    .from("review_comments")
+    .select("*")
+    .eq("review_id", id)
+    .order("created_at", { ascending: false });
+
+  const typedComments = (reviewComments ?? []) as ReviewComment[];
 
   return (
     <>
@@ -83,6 +94,29 @@ export default async function ReviewDetailPage({
 
             <ReviewActions reviewId={r.id} authorId={r.author_id} />
           </article>
+
+          {/* コメントセクション */}
+          <section className="mt-6">
+            <h2 className="text-lg font-bold text-gray-700 mb-4">
+              コメント ({typedComments.length})
+            </h2>
+
+            {typedComments.length > 0 ? (
+              <div className="space-y-3 mb-6">
+                {typedComments.map((comment) => (
+                  <ReviewCommentItem key={comment.id} comment={comment} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400 mb-6">
+                まだコメントはありません
+              </p>
+            )}
+
+            <div className="bg-white rounded-xl shadow-sm p-4">
+              <ReviewCommentForm reviewId={id} />
+            </div>
+          </section>
         </div>
       </main>
       <Footer />
