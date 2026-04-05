@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AuthStatus from "./AuthStatus";
 
 export default function Header() {
   return (
@@ -9,8 +10,8 @@ export default function Header() {
           🏘️ ポイ活の村
         </Link>
 
-        {/* ナビゲーション */}
-        <nav className="flex gap-4 text-sm font-medium">
+        {/* ナビゲーション + 認証 */}
+        <nav className="flex items-center gap-4 text-sm font-medium">
           <Link
             href="/board"
             className="text-gray-600 hover:text-village-pink-500 transition-colors"
@@ -29,6 +30,7 @@ export default function Header() {
           >
             マイページ
           </Link>
+          <AuthStatus />
         </nav>
       </div>
     </header>
