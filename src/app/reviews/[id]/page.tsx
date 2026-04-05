@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { DIFFICULTY_COLORS, DANGER_LEVEL_COLORS, type Review } from "@/lib/types";
 import StarRating from "@/components/StarRating";
+import ReviewActions from "@/components/ReviewActions";
 
 export default async function ReviewDetailPage({
   params,
@@ -79,6 +80,8 @@ export default async function ReviewDetailPage({
             <div className="text-gray-600 leading-relaxed whitespace-pre-wrap">
               {r.comment}
             </div>
+
+            <ReviewActions reviewId={r.id} authorId={r.author_id} />
           </article>
         </div>
       </main>
