@@ -25,6 +25,12 @@ export default function Header() {
             レビュー
           </Link>
           <Link
+            href="/guide"
+            className="text-gray-600 hover:text-village-pink-500 transition-colors"
+          >
+            初心者ガイド
+          </Link>
+          <Link
             href="/mypage"
             className="text-gray-600 hover:text-village-pink-500 transition-colors"
           >
