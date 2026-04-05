@@ -3,15 +3,16 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORIES, CATEGORY_COLORS, type Post } from "@/lib/types";
+import SearchForm from "@/components/SearchForm";
 
 const PER_PAGE = 10;
 
 export default async function BoardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; sort?: string; page?: string }>;
+  searchParams: Promise<{ category?: string; sort?: string; page?: string; search?: string }>;
 }) {
-  const { category, sort, page } = await searchParams;
+  const { category, sort, page, search } = await searchParams;
   const currentPage = Math.max(1, Number(page) || 1);
   const ascending = sort === "oldest";
 
@@ -27,6 +28,11 @@ export default async function BoardPage({
     query = query.eq("category", category);
   }
 
+  // キーワード検索
+  if (search) {
+    query = query.ilike("title", `%${search}%`);
+  }
+
   // ページング
   const from = (currentPage - 1) * PER_PAGE;
   query = query.range(from, from + PER_PAGE - 1);
@@ -39,6 +45,7 @@ export default async function BoardPage({
     const p = new URLSearchParams();
     if (params.category ?? category) p.set("category", (params.category ?? category)!);
     if (params.sort ?? sort) p.set("sort", (params.sort ?? sort)!);
+    if (search) p.set("search", search);
     if (params.page) p.set("page", params.page);
     const qs = p.toString();
     return `/board${qs ? `?${qs}` : ""}`;
@@ -59,6 +66,16 @@ export default async function BoardPage({
               ✏️ 新しく投稿する
             </Link>
           </div>
+
+          {/* 検索フォーム */}
+          <SearchForm
+            defaultValue={search ?? ""}
+            baseUrl="/board"
+            keepParams={{
+              ...(category ? { category } : {}),
+              ...(sort ? { sort } : {}),
+            }}
+          />
 
           {/* カテゴリフィルター */}
           <div className="flex flex-wrap gap-2 mb-4">
@@ -175,12 +192,14 @@ export default async function BoardPage({
             <div className="text-center py-16">
               <div className="text-4xl mb-4">📭</div>
               <p className="text-gray-500 mb-2">
-                {category
+                {search
+                  ? "該当する投稿が見つかりません"
+                  : category
                   ? `「${category}」の投稿はまだありません`
                   : "まだ投稿がありません"}
               </p>
               <p className="text-sm text-gray-400">
-                最初の投稿をしてみましょう！
+                {search ? "別のキーワードで試してみましょう" : "最初の投稿をしてみましょう！"}
               </p>
             </div>
           )}

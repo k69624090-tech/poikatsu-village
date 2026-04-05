@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { DIFFICULTIES, DANGER_LEVELS, DIFFICULTY_COLORS, DANGER_LEVEL_COLORS, type Review } from "@/lib/types";
+import SearchForm from "@/components/SearchForm";
 import StarRating from "@/components/StarRating";
 
 const PER_PAGE = 10;
@@ -10,9 +11,9 @@ const PER_PAGE = 10;
 export default async function ReviewsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ difficulty?: string; danger_level?: string; sort?: string; page?: string }>;
+  searchParams: Promise<{ difficulty?: string; danger_level?: string; sort?: string; page?: string; search?: string }>;
 }) {
-  const { difficulty, danger_level, sort, page } = await searchParams;
+  const { difficulty, danger_level, sort, page, search } = await searchParams;
   const currentPage = Math.max(1, Number(page) || 1);
   const ascending = sort === "oldest";
 
@@ -29,6 +30,11 @@ export default async function ReviewsPage({
     query = query.eq("danger_level", danger_level);
   }
 
+  // キーワード検索（案件名）
+  if (search) {
+    query = query.ilike("case_name", `%${search}%`);
+  }
+
   // ページング
   const from = (currentPage - 1) * PER_PAGE;
   query = query.range(from, from + PER_PAGE - 1);
@@ -38,13 +44,13 @@ export default async function ReviewsPage({
 
   // 現在のフィルターパラメータを保持するヘルパー
   const buildHref = (params: Record<string, string | undefined>) => {
-    const current: Record<string, string | undefined> = { difficulty, danger_level, sort };
+    const current: Record<string, string | undefined> = { difficulty, danger_level, sort, search };
     for (const key of Object.keys(params)) {
       current[key] = params[key];
     }
     const p = new URLSearchParams();
     for (const [k, v] of Object.entries(current)) {
-      if (v) p.set(k, v);
+      if (k !== "page" && v) p.set(k, v);
     }
     if (params.page) p.set("page", params.page);
     const qs = p.toString();
@@ -66,6 +72,17 @@ export default async function ReviewsPage({
               ✏️ レビューを書く
             </Link>
           </div>
+
+          {/* 検索フォーム */}
+          <SearchForm
+            defaultValue={search ?? ""}
+            baseUrl="/reviews"
+            keepParams={{
+              ...(difficulty ? { difficulty } : {}),
+              ...(danger_level ? { danger_level } : {}),
+              ...(sort ? { sort } : {}),
+            }}
+          />
 
           {/* 難易度フィルター */}
           <div className="mb-4">
@@ -225,12 +242,16 @@ export default async function ReviewsPage({
             <div className="text-center py-16">
               <div className="text-4xl mb-4">📭</div>
               <p className="text-gray-500 mb-2">
-                {difficulty || danger_level
+                {search
+                  ? "該当するレビューが見つかりません"
+                  : difficulty || danger_level
                   ? "条件に一致するレビューがありません"
                   : "まだレビューがありません"}
               </p>
               <p className="text-sm text-gray-400">
-                {difficulty || danger_level
+                {search
+                  ? "別のキーワードで試してみましょう"
+                  : difficulty || danger_level
                   ? "フィルターを変更してみましょう"
                   : "最初のレビューを書いてみましょう！"}
               </p>
