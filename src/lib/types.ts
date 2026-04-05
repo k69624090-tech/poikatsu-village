@@ -36,3 +36,37 @@ export const CATEGORY_COLORS: Record<Post["category"], string> = {
   注意案件: "bg-red-100 text-red-700",
   雑談: "bg-purple-100 text-purple-700",
 };
+
+// レビューの型定義
+export type Review = {
+  id: string;
+  case_name: string;
+  reward: string;
+  difficulty: "簡単" | "普通" | "難しい";
+  danger_level: "低" | "中" | "高";
+  rating: number;
+  comment: string;
+  author_id: string;
+  author_email: string;
+  created_at: string;
+};
+
+// 難易度一覧
+export const DIFFICULTIES = ["簡単", "普通", "難しい"] as const;
+
+// 危険度一覧
+export const DANGER_LEVELS = ["低", "中", "高"] as const;
+
+// 難易度バッジ色
+export const DIFFICULTY_COLORS: Record<Review["difficulty"], string> = {
+  簡単: "bg-green-100 text-green-700",
+  普通: "bg-yellow-100 text-yellow-700",
+  難しい: "bg-red-100 text-red-700",
+};
+
+// 危険度バッジ色
+export const DANGER_LEVEL_COLORS: Record<Review["danger_level"], string> = {
+  低: "bg-blue-100 text-blue-700",
+  中: "bg-orange-100 text-orange-700",
+  高: "bg-red-100 text-red-700",
+};
