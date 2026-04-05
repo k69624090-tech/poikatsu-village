@@ -4,26 +4,45 @@ import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { CATEGORIES, CATEGORY_COLORS, type Post } from "@/lib/types";
 
+const PER_PAGE = 10;
+
 export default async function BoardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; sort?: string; page?: string }>;
 }) {
-  const { category } = await searchParams;
+  const { category, sort, page } = await searchParams;
+  const currentPage = Math.max(1, Number(page) || 1);
+  const ascending = sort === "oldest";
 
   // サーバー側でSupabaseから投稿を取得
   const supabase = await createClient();
   let query = supabase
     .from("posts")
-    .select("*")
-    .order("created_at", { ascending: false });
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending });
 
   // カテゴリフィルター
   if (category && CATEGORIES.includes(category as Post["category"])) {
     query = query.eq("category", category);
   }
 
-  const { data: posts } = await query;
+  // ページング
+  const from = (currentPage - 1) * PER_PAGE;
+  query = query.range(from, from + PER_PAGE - 1);
+
+  const { data: posts, count } = await query;
+  const totalPages = Math.ceil((count ?? 0) / PER_PAGE);
+
+  // 現在のフィルターパラメータを保持するヘルパー
+  const buildHref = (params: Record<string, string | undefined>) => {
+    const p = new URLSearchParams();
+    if (params.category ?? category) p.set("category", (params.category ?? category)!);
+    if (params.sort ?? sort) p.set("sort", (params.sort ?? sort)!);
+    if (params.page) p.set("page", params.page);
+    const qs = p.toString();
+    return `/board${qs ? `?${qs}` : ""}`;
+  };
 
   return (
     <>
@@ -42,9 +61,9 @@ export default async function BoardPage({
           </div>
 
           {/* カテゴリフィルター */}
-          <div className="flex flex-wrap gap-2 mb-6">
+          <div className="flex flex-wrap gap-2 mb-4">
             <Link
-              href="/board"
+              href={buildHref({ category: undefined, sort, page: undefined })}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 !category
                   ? "bg-village-pink-500 text-white"
@@ -56,7 +75,7 @@ export default async function BoardPage({
             {CATEGORIES.map((cat) => (
               <Link
                 key={cat}
-                href={`/board?category=${cat}`}
+                href={buildHref({ category: cat, page: undefined })}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   category === cat
                     ? "bg-village-pink-500 text-white"
@@ -68,39 +87,90 @@ export default async function BoardPage({
             ))}
           </div>
 
+          {/* ソート */}
+          <div className="flex gap-2 mb-6">
+            <Link
+              href={buildHref({ sort: undefined, page: undefined })}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                !ascending
+                  ? "bg-gray-700 text-white"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              新しい順
+            </Link>
+            <Link
+              href={buildHref({ sort: "oldest", page: undefined })}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                ascending
+                  ? "bg-gray-700 text-white"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              古い順
+            </Link>
+          </div>
+
           {/* 投稿一覧 */}
           {posts && posts.length > 0 ? (
-            <div className="space-y-4">
-              {posts.map((post: Post) => (
-                <Link
-                  key={post.id}
-                  href={`/board/${post.id}`}
-                  className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-5 border border-village-pink-100"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${
-                        CATEGORY_COLORS[post.category]
-                      }`}
+            <>
+              <div className="space-y-4">
+                {posts.map((post: Post) => (
+                  <Link
+                    key={post.id}
+                    href={`/board/${post.id}`}
+                    className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-5 border border-village-pink-100"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span
+                        className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${
+                          CATEGORY_COLORS[post.category]
+                        }`}
+                      >
+                        {post.category}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        {new Date(post.created_at).toLocaleDateString("ja-JP")}
+                      </span>
+                    </div>
+                    <h2 className="text-lg font-bold text-gray-700 mb-1">
+                      {post.title}
+                    </h2>
+                    <p className="text-sm text-gray-500 line-clamp-2">
+                      {post.content}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">
+                      {post.author_email || "匿名ユーザー"}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+
+              {/* ページング */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-8">
+                  {currentPage > 1 && (
+                    <Link
+                      href={buildHref({ page: String(currentPage - 1) })}
+                      className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-village-pink-200 hover:bg-village-pink-50 transition-colors"
                     >
-                      {post.category}
-                    </span>
-                    <span className="text-xs text-gray-400">
-                      {new Date(post.created_at).toLocaleDateString("ja-JP")}
-                    </span>
-                  </div>
-                  <h2 className="text-lg font-bold text-gray-700 mb-1">
-                    {post.title}
-                  </h2>
-                  <p className="text-sm text-gray-500 line-clamp-2">
-                    {post.content}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-2">
-                    {post.author_email || "匿名ユーザー"}
-                  </p>
-                </Link>
-              ))}
-            </div>
+                      ← 前へ
+                    </Link>
+                  )}
+                  <span className="text-sm text-gray-500 px-3">
+                    {currentPage} / {totalPages}
+                  </span>
+                  {currentPage < totalPages && (
+                    <Link
+                      href={buildHref({ page: String(currentPage + 1) })}
+                      className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-village-pink-200 hover:bg-village-pink-50 transition-colors"
+                    >
+                      次へ →
+                    </Link>
+                  )}
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-16">
               <div className="text-4xl mb-4">📭</div>

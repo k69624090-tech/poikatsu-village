@@ -5,18 +5,22 @@ import { createClient } from "@/lib/supabase/server";
 import { DIFFICULTIES, DANGER_LEVELS, DIFFICULTY_COLORS, DANGER_LEVEL_COLORS, type Review } from "@/lib/types";
 import StarRating from "@/components/StarRating";
 
+const PER_PAGE = 10;
+
 export default async function ReviewsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ difficulty?: string; danger_level?: string }>;
+  searchParams: Promise<{ difficulty?: string; danger_level?: string; sort?: string; page?: string }>;
 }) {
-  const { difficulty, danger_level } = await searchParams;
+  const { difficulty, danger_level, sort, page } = await searchParams;
+  const currentPage = Math.max(1, Number(page) || 1);
+  const ascending = sort === "oldest";
 
   const supabase = await createClient();
   let query = supabase
     .from("reviews")
-    .select("*")
-    .order("created_at", { ascending: false });
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending });
 
   if (difficulty && (DIFFICULTIES as readonly string[]).includes(difficulty)) {
     query = query.eq("difficulty", difficulty);
@@ -25,7 +29,27 @@ export default async function ReviewsPage({
     query = query.eq("danger_level", danger_level);
   }
 
-  const { data: reviews } = await query;
+  // ページング
+  const from = (currentPage - 1) * PER_PAGE;
+  query = query.range(from, from + PER_PAGE - 1);
+
+  const { data: reviews, count } = await query;
+  const totalPages = Math.ceil((count ?? 0) / PER_PAGE);
+
+  // 現在のフィルターパラメータを保持するヘルパー
+  const buildHref = (params: Record<string, string | undefined>) => {
+    const current: Record<string, string | undefined> = { difficulty, danger_level, sort };
+    for (const key of Object.keys(params)) {
+      current[key] = params[key];
+    }
+    const p = new URLSearchParams();
+    for (const [k, v] of Object.entries(current)) {
+      if (v) p.set(k, v);
+    }
+    if (params.page) p.set("page", params.page);
+    const qs = p.toString();
+    return `/reviews${qs ? `?${qs}` : ""}`;
+  };
 
   return (
     <>
@@ -48,7 +72,7 @@ export default async function ReviewsPage({
             <p className="text-xs font-medium text-gray-500 mb-2">難易度</p>
             <div className="flex flex-wrap gap-2">
               <Link
-                href={`/reviews${danger_level ? `?danger_level=${danger_level}` : ""}`}
+                href={buildHref({ difficulty: undefined, page: undefined })}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   !difficulty
                     ? "bg-village-pink-500 text-white"
@@ -60,7 +84,7 @@ export default async function ReviewsPage({
               {DIFFICULTIES.map((d) => (
                 <Link
                   key={d}
-                  href={`/reviews?difficulty=${d}${danger_level ? `&danger_level=${danger_level}` : ""}`}
+                  href={buildHref({ difficulty: d, page: undefined })}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                     difficulty === d
                       ? "bg-village-pink-500 text-white"
@@ -74,11 +98,11 @@ export default async function ReviewsPage({
           </div>
 
           {/* 危険度フィルター */}
-          <div className="mb-6">
+          <div className="mb-4">
             <p className="text-xs font-medium text-gray-500 mb-2">危険度</p>
             <div className="flex flex-wrap gap-2">
               <Link
-                href={`/reviews${difficulty ? `?difficulty=${difficulty}` : ""}`}
+                href={buildHref({ danger_level: undefined, page: undefined })}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                   !danger_level
                     ? "bg-village-pink-500 text-white"
@@ -90,7 +114,7 @@ export default async function ReviewsPage({
               {DANGER_LEVELS.map((d) => (
                 <Link
                   key={d}
-                  href={`/reviews?danger_level=${d}${difficulty ? `&difficulty=${difficulty}` : ""}`}
+                  href={buildHref({ danger_level: d, page: undefined })}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                     danger_level === d
                       ? "bg-village-pink-500 text-white"
@@ -103,49 +127,100 @@ export default async function ReviewsPage({
             </div>
           </div>
 
+          {/* ソート */}
+          <div className="flex gap-2 mb-6">
+            <Link
+              href={buildHref({ sort: undefined, page: undefined })}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                !ascending
+                  ? "bg-gray-700 text-white"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              新しい順
+            </Link>
+            <Link
+              href={buildHref({ sort: "oldest", page: undefined })}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                ascending
+                  ? "bg-gray-700 text-white"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              古い順
+            </Link>
+          </div>
+
           {/* レビュー一覧 */}
           {reviews && reviews.length > 0 ? (
-            <div className="space-y-4">
-              {reviews.map((review: Review) => (
-                <Link
-                  key={review.id}
-                  href={`/reviews/${review.id}`}
-                  className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-5 border border-village-pink-100"
-                >
-                  <div className="flex items-start justify-between gap-4 mb-2">
-                    <h2 className="text-lg font-bold text-gray-700">
-                      {review.case_name}
-                    </h2>
-                    <span className="text-sm font-medium text-village-pink-600 whitespace-nowrap">
-                      {review.reward}
-                    </span>
-                  </div>
+            <>
+              <div className="space-y-4">
+                {reviews.map((review: Review) => (
+                  <Link
+                    key={review.id}
+                    href={`/reviews/${review.id}`}
+                    className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-5 border border-village-pink-100"
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-2">
+                      <h2 className="text-lg font-bold text-gray-700">
+                        {review.case_name}
+                      </h2>
+                      <span className="text-sm font-medium text-village-pink-600 whitespace-nowrap">
+                        {review.reward}
+                      </span>
+                    </div>
 
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <StarRating rating={review.rating} />
-                    <span
-                      className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${DIFFICULTY_COLORS[review.difficulty]}`}
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <StarRating rating={review.rating} />
+                      <span
+                        className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${DIFFICULTY_COLORS[review.difficulty]}`}
+                      >
+                        難易度: {review.difficulty}
+                      </span>
+                      <span
+                        className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${DANGER_LEVEL_COLORS[review.danger_level]}`}
+                      >
+                        危険度: {review.danger_level}
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-gray-500 line-clamp-2 mb-2">
+                      {review.comment}
+                    </p>
+
+                    <div className="flex items-center gap-3 text-xs text-gray-400">
+                      <span>{review.author_email || "匿名ユーザー"}</span>
+                      <span>{new Date(review.created_at).toLocaleDateString("ja-JP")}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {/* ページング */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-8">
+                  {currentPage > 1 && (
+                    <Link
+                      href={buildHref({ page: String(currentPage - 1) })}
+                      className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-village-pink-200 hover:bg-village-pink-50 transition-colors"
                     >
-                      難易度: {review.difficulty}
-                    </span>
-                    <span
-                      className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${DANGER_LEVEL_COLORS[review.danger_level]}`}
+                      ← 前へ
+                    </Link>
+                  )}
+                  <span className="text-sm text-gray-500 px-3">
+                    {currentPage} / {totalPages}
+                  </span>
+                  {currentPage < totalPages && (
+                    <Link
+                      href={buildHref({ page: String(currentPage + 1) })}
+                      className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 border border-village-pink-200 hover:bg-village-pink-50 transition-colors"
                     >
-                      危険度: {review.danger_level}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-gray-500 line-clamp-2 mb-2">
-                    {review.comment}
-                  </p>
-
-                  <div className="flex items-center gap-3 text-xs text-gray-400">
-                    <span>{review.author_email || "匿名ユーザー"}</span>
-                    <span>{new Date(review.created_at).toLocaleDateString("ja-JP")}</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                      次へ →
+                    </Link>
+                  )}
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-16">
               <div className="text-4xl mb-4">📭</div>
