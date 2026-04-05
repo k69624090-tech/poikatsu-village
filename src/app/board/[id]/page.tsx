@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
-import { CATEGORY_COLORS, type Post } from "@/lib/types";
+import { CATEGORY_COLORS, type Post, type Comment } from "@/lib/types";
+import CommentForm from "@/components/CommentForm";
 
 export default async function PostDetailPage({
   params,
@@ -25,6 +26,15 @@ export default async function PostDetailPage({
   }
 
   const typedPost = post as Post;
+
+  // コメント一覧を取得
+  const { data: comments } = await supabase
+    .from("comments")
+    .select("*")
+    .eq("post_id", id)
+    .order("created_at", { ascending: true });
+
+  const typedComments = (comments ?? []) as Comment[];
 
   return (
     <>
@@ -72,6 +82,52 @@ export default async function PostDetailPage({
               {typedPost.content}
             </div>
           </article>
+
+          {/* コメントセクション */}
+          <section className="mt-6">
+            <h2 className="text-lg font-bold text-gray-700 mb-4">
+              コメント ({typedComments.length})
+            </h2>
+
+            {/* コメント一覧 */}
+            {typedComments.length > 0 ? (
+              <div className="space-y-3 mb-6">
+                {typedComments.map((comment) => (
+                  <div
+                    key={comment.id}
+                    className="bg-white rounded-xl shadow-sm p-4"
+                  >
+                    <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                      <span>{comment.author_email || "匿名ユーザー"}</span>
+                      <span>
+                        {new Date(comment.created_at).toLocaleDateString(
+                          "ja-JP",
+                          {
+                            month: "long",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 text-sm whitespace-pre-wrap">
+                      {comment.content}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400 mb-6">
+                まだコメントはありません
+              </p>
+            )}
+
+            {/* コメント投稿フォーム */}
+            <div className="bg-white rounded-xl shadow-sm p-4">
+              <CommentForm postId={id} />
+            </div>
+          </section>
         </div>
       </main>
       <Footer />

@@ -9,6 +9,16 @@ export type Post = {
   created_at: string;
 };
 
+// コメントの型定義
+export type Comment = {
+  id: string;
+  post_id: string;
+  content: string;
+  author_id: string;
+  author_email: string;
+  created_at: string;
+};
+
 // カテゴリ一覧（フィルターやフォームで使いまわす）
 export const CATEGORIES = [
   "成果報告",
