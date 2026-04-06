@@ -67,7 +67,7 @@ export default function ReviewCommentItem({ comment }: { comment: ReviewComment 
         )}
       </div>
       <p className="text-gray-600 whitespace-pre-wrap">{comment.content}</p>
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
     </div>
   );
 }

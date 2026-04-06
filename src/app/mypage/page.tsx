@@ -91,8 +91,9 @@ export default async function MyPage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-xl p-6 text-center text-gray-400 text-sm">
-                まだ投稿がありません
+              <div className="bg-white rounded-xl p-6 text-center">
+                <div className="text-3xl mb-2">📭</div>
+                <p className="text-gray-400 text-sm">まだ投稿がありません</p>
               </div>
             )}
           </section>
@@ -140,8 +141,9 @@ export default async function MyPage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-xl p-6 text-center text-gray-400 text-sm">
-                まだレビューがありません
+              <div className="bg-white rounded-xl p-6 text-center">
+                <div className="text-3xl mb-2">📭</div>
+                <p className="text-gray-400 text-sm">まだレビューがありません</p>
               </div>
             )}
           </section>

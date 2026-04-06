@@ -37,7 +37,7 @@ export default function SearchForm({
       />
       <button
         type="submit"
-        className="bg-village-pink-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-village-pink-600 transition-colors"
+        className="bg-village-pink-500 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-village-pink-600 transition-colors"
       >
         検索
       </button>

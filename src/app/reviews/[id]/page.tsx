@@ -53,10 +53,10 @@ export default async function ReviewDetailPage({
           <article className="bg-white rounded-2xl shadow-md p-8">
             {/* バッジ行 */}
             <div className="flex flex-wrap gap-2 mb-3">
-              <span className={`text-xs px-3 py-1 rounded-full font-medium ${DIFFICULTY_COLORS[r.difficulty]}`}>
+              <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${DIFFICULTY_COLORS[r.difficulty]}`}>
                 難易度: {r.difficulty}
               </span>
-              <span className={`text-xs px-3 py-1 rounded-full font-medium ${DANGER_LEVEL_COLORS[r.danger_level]}`}>
+              <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${DANGER_LEVEL_COLORS[r.danger_level]}`}>
                 危険度: {r.danger_level}
               </span>
             </div>

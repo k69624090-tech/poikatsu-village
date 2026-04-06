@@ -11,7 +11,7 @@ export default function Header() {
         </Link>
 
         {/* ナビゲーション + 認証 */}
-        <nav className="flex items-center gap-4 text-sm font-medium">
+        <nav className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
           <Link
             href="/board"
             className="text-gray-600 hover:text-village-pink-500 transition-colors"

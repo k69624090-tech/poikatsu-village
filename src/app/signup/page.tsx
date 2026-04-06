@@ -64,7 +64,7 @@ export default function SignupPage() {
           🏘️ アカウント作成
         </h1>
 
-        <form onSubmit={handleSignup} className="space-y-4">
+        <form onSubmit={handleSignup} className="space-y-5">
           <div>
             <label
               htmlFor="email"
@@ -103,7 +103,7 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <p className="text-sm text-village-pink-600 bg-village-pink-50 rounded-lg p-3">
+            <p className="text-sm text-red-500 bg-red-50 rounded-lg p-3">
               {error}
             </p>
           )}

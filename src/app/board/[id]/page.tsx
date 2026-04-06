@@ -52,7 +52,7 @@ export default async function PostDetailPage({
           <article className="bg-white rounded-2xl shadow-md p-8">
             {/* カテゴリバッジ */}
             <span
-              className={`text-xs px-3 py-1 rounded-full font-medium ${
+              className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                 CATEGORY_COLORS[typedPost.category]
               }`}
             >
@@ -99,7 +99,7 @@ export default async function PostDetailPage({
                 {typedComments.map((comment) => (
                   <div
                     key={comment.id}
-                    className="bg-white rounded-xl shadow-sm p-4"
+                    className="bg-white rounded-xl shadow-sm p-4 border border-village-pink-100"
                   >
                     <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
                       <span>{comment.author_email || "匿名ユーザー"}</span>

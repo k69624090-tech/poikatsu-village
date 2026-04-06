@@ -150,8 +150,8 @@ export default async function ReviewsPage({
               href={buildHref({ sort: undefined, page: undefined })}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 !ascending
-                  ? "bg-gray-700 text-white"
-                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                  ? "bg-village-pink-500 text-white"
+                  : "bg-white text-gray-600 border border-village-pink-200 hover:bg-village-pink-50"
               }`}
             >
               新しい順
@@ -160,8 +160,8 @@ export default async function ReviewsPage({
               href={buildHref({ sort: "oldest", page: undefined })}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 ascending
-                  ? "bg-gray-700 text-white"
-                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                  ? "bg-village-pink-500 text-white"
+                  : "bg-white text-gray-600 border border-village-pink-200 hover:bg-village-pink-50"
               }`}
             >
               古い順

@@ -65,12 +65,12 @@ export default function CommentForm({ postId }: { postId: string }) {
         placeholder="コメントを入力..."
       />
       {error && (
-        <p className="text-sm text-village-pink-600">{error}</p>
+        <p className="text-sm text-red-500">{error}</p>
       )}
       <button
         type="submit"
         disabled={submitting || !content.trim()}
-        className="bg-village-pink-500 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-village-pink-600 transition-colors disabled:opacity-50"
+        className="bg-village-pink-500 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-village-pink-600 transition-colors disabled:opacity-50"
       >
         {submitting ? "送信中..." : "コメントする"}
       </button>
