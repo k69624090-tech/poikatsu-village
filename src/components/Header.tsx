@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AuthStatus from "./AuthStatus";
+import MobileMenu from "./MobileMenu";
 
 export default function Header() {
   return (
@@ -11,32 +12,38 @@ export default function Header() {
         </Link>
 
         {/* ナビゲーション + 認証 */}
-        <nav className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
-          <Link
-            href="/board"
-            className="text-gray-600 hover:text-village-pink-500 transition-colors"
-          >
-            掲示板
-          </Link>
-          <Link
-            href="/reviews"
-            className="text-gray-600 hover:text-village-pink-500 transition-colors"
-          >
-            レビュー
-          </Link>
-          <Link
-            href="/guide"
-            className="text-gray-600 hover:text-village-pink-500 transition-colors"
-          >
-            初心者ガイド
-          </Link>
-          <Link
-            href="/mypage"
-            className="text-gray-600 hover:text-village-pink-500 transition-colors"
-          >
-            マイページ
-          </Link>
+        <nav className="flex items-center gap-3">
+          {/* デスクトップ用リンク（SM以上で表示） */}
+          <div className="hidden sm:flex items-center gap-4 text-sm font-medium">
+            <Link
+              href="/board"
+              className="text-gray-600 hover:text-village-pink-500 transition-colors"
+            >
+              掲示板
+            </Link>
+            <Link
+              href="/reviews"
+              className="text-gray-600 hover:text-village-pink-500 transition-colors"
+            >
+              レビュー
+            </Link>
+            <Link
+              href="/guide"
+              className="text-gray-600 hover:text-village-pink-500 transition-colors"
+            >
+              初心者ガイド
+            </Link>
+            <Link
+              href="/mypage"
+              className="text-gray-600 hover:text-village-pink-500 transition-colors"
+            >
+              マイページ
+            </Link>
+          </div>
+          {/* 認証（常に表示） */}
           <AuthStatus />
+          {/* モバイル用ハンバーガーメニュー（SM未満で表示） */}
+          <MobileMenu />
         </nav>
       </div>
     </header>
