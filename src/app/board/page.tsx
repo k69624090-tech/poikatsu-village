@@ -61,9 +61,9 @@ export default async function BoardPage({
             <h1 className="text-2xl font-bold text-gray-700">💬 掲示板</h1>
             <Link
               href="/board/new"
-              className="bg-village-pink-500 text-white px-6 py-2 rounded-full font-medium hover:bg-village-pink-600 transition-colors shadow-md text-sm"
+              className="bg-village-pink-500 text-white px-4 sm:px-6 py-2 rounded-full font-medium hover:bg-village-pink-600 transition-colors shadow-md text-xs sm:text-sm whitespace-nowrap"
             >
-              ✏️ 新しく投稿する
+              ✏️ <span className="hidden sm:inline">新しく</span>投稿する
             </Link>
           </div>
 

@@ -36,6 +36,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-village-pink-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-md p-8 w-full max-w-md">
+        <Link href="/" className="text-xs text-village-pink-400 hover:underline mb-4 inline-block">
+          ← ホームに戻る
+        </Link>
         <h1 className="text-2xl font-bold text-center text-village-pink-600 mb-6">
           🏘️ ログイン
         </h1>

@@ -67,9 +67,9 @@ export default async function ReviewsPage({
             <h1 className="text-2xl font-bold text-gray-700">⭐ 案件レビュー</h1>
             <Link
               href="/reviews/new"
-              className="bg-village-pink-500 text-white px-6 py-2 rounded-full font-medium hover:bg-village-pink-600 transition-colors shadow-md text-sm"
+              className="bg-village-pink-500 text-white px-4 sm:px-6 py-2 rounded-full font-medium hover:bg-village-pink-600 transition-colors shadow-md text-xs sm:text-sm whitespace-nowrap"
             >
-              ✏️ レビューを書く
+              ✏️ <span className="hidden sm:inline">レビューを</span>書く
             </Link>
           </div>
 
@@ -182,7 +182,7 @@ export default async function ReviewsPage({
                       <h2 className="text-lg font-bold text-gray-700">
                         {review.case_name}
                       </h2>
-                      <span className="text-sm font-medium text-village-pink-600 whitespace-nowrap">
+                      <span className="text-sm font-medium text-village-pink-600 truncate max-w-[8rem] sm:max-w-none">
                         {review.reward}
                       </span>
                     </div>
