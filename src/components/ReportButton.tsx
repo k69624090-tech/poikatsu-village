@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { REPORT_REASONS } from "@/lib/types";
 
@@ -18,6 +18,18 @@ export default function ReportButton({ targetType, targetId, authorId }: Props) 
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [error, setError] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
+  // 自分のコンテンツかどうか（trueの間はボタン非表示）
+  const [isOwner, setIsOwner] = useState(true);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setIsOwner(user?.id === authorId);
+    });
+  }, [authorId]);
+
+  // 自分のコンテンツには通報ボタンを表示しない
+  if (isOwner) return null;
 
   const handleOpen = async () => {
     const supabase = createClient();
@@ -27,11 +39,9 @@ export default function ReportButton({ targetType, targetId, authorId }: Props) 
 
     if (!user) {
       setNotLoggedIn(true);
-      setOpen(true);
-      return;
+    } else {
+      setNotLoggedIn(false);
     }
-    if (user.id === authorId) return; // 自分のコンテンツは通報不可
-    setNotLoggedIn(false);
     setError("");
     setOpen(true);
   };
