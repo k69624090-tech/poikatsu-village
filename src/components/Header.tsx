@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AuthStatus from "./AuthStatus";
 import MobileMenu from "./MobileMenu";
+import AdminLink from "./AdminLink";
 
 export default function Header() {
   return (
@@ -40,6 +41,8 @@ export default function Header() {
               マイページ
             </Link>
           </div>
+          {/* 管理者リンク（管理者のみ表示） */}
+          <AdminLink />
           {/* 認証（常に表示） */}
           <AuthStatus />
           {/* モバイル用ハンバーガーメニュー（SM未満で表示） */}
