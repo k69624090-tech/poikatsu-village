@@ -35,6 +35,10 @@ export default async function AdminPage({
   let posts: Post[] = [];
   let reviews: Review[] = [];
 
+  // コメント・レビューコメントの親ID解決用マップ
+  const commentParentMap: Record<string, string> = {};
+  const reviewCommentParentMap: Record<string, string> = {};
+
   if (tab === "reports") {
     const { data } = await service
       .from("reports")
@@ -42,6 +46,34 @@ export default async function AdminPage({
       .eq("status", status)
       .order("created_at", { ascending: false });
     reports = (data ?? []) as Report[];
+
+    // コメントの親投稿IDを解決
+    const commentIds = reports
+      .filter((r) => r.target_type === "comment")
+      .map((r) => r.target_id);
+    if (commentIds.length > 0) {
+      const { data: comments } = await service
+        .from("comments")
+        .select("id, post_id")
+        .in("id", commentIds);
+      (comments ?? []).forEach((c: { id: string; post_id: string }) => {
+        commentParentMap[c.id] = c.post_id;
+      });
+    }
+
+    // レビューコメントの親レビューIDを解決
+    const reviewCommentIds = reports
+      .filter((r) => r.target_type === "review_comment")
+      .map((r) => r.target_id);
+    if (reviewCommentIds.length > 0) {
+      const { data: reviewComments } = await service
+        .from("review_comments")
+        .select("id, review_id")
+        .in("id", reviewCommentIds);
+      (reviewComments ?? []).forEach((c: { id: string; review_id: string }) => {
+        reviewCommentParentMap[c.id] = c.review_id;
+      });
+    }
   } else if (tab === "posts") {
     const { data } = await service
       .from("posts")
@@ -138,9 +170,45 @@ export default async function AdminPage({
                             <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
                               {targetTypeLabels[report.target_type]}
                             </span>
-                            <span className="text-xs text-gray-400 font-mono">
-                              {report.target_id.slice(0, 8)}...
-                            </span>
+                            {/* 通報対象へのリンク */}
+                            {report.target_type === "post" && (
+                              <Link
+                                href={`/board/${report.target_id}`}
+                                target="_blank"
+                                className="text-xs text-village-pink-500 hover:underline"
+                              >
+                                投稿を見る →
+                              </Link>
+                            )}
+                            {report.target_type === "review" && (
+                              <Link
+                                href={`/reviews/${report.target_id}`}
+                                target="_blank"
+                                className="text-xs text-village-pink-500 hover:underline"
+                              >
+                                レビューを見る →
+                              </Link>
+                            )}
+                            {report.target_type === "comment" &&
+                              commentParentMap[report.target_id] && (
+                                <Link
+                                  href={`/board/${commentParentMap[report.target_id]}`}
+                                  target="_blank"
+                                  className="text-xs text-village-pink-500 hover:underline"
+                                >
+                                  投稿を見る →
+                                </Link>
+                              )}
+                            {report.target_type === "review_comment" &&
+                              reviewCommentParentMap[report.target_id] && (
+                                <Link
+                                  href={`/reviews/${reviewCommentParentMap[report.target_id]}`}
+                                  target="_blank"
+                                  className="text-xs text-village-pink-500 hover:underline"
+                                >
+                                  レビューを見る →
+                                </Link>
+                              )}
                           </div>
                           <p className="text-sm font-medium text-gray-700">
                             {report.reason}
