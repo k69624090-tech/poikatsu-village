@@ -80,3 +80,24 @@ export type ReviewComment = {
   author_email: string;
   created_at: string;
 };
+
+// 通報の型定義
+export type Report = {
+  id: string;
+  target_type: "post" | "review" | "comment" | "review_comment";
+  target_id: string;
+  reason: string;
+  reporter_id: string;
+  reporter_email: string;
+  status: "pending" | "resolved" | "dismissed";
+  created_at: string;
+};
+
+// 通報理由一覧
+export const REPORT_REASONS = [
+  "スパム・宣伝",
+  "虚偽・誤情報",
+  "不適切なコンテンツ",
+  "誹謗中傷・嫌がらせ",
+  "その他",
+] as const;

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { ReviewComment } from "@/lib/types";
+import ReportButton from "@/components/ReportButton";
 
 export default function ReviewCommentItem({ comment }: { comment: ReviewComment }) {
   const router = useRouter();
@@ -56,15 +57,22 @@ export default function ReviewCommentItem({ comment }: { comment: ReviewComment 
             })}
           </span>
         </div>
-        {isOwner && (
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="text-xs text-red-400 hover:text-red-600 transition-colors disabled:opacity-50"
-          >
-            {deleting ? "削除中..." : "削除"}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {isOwner && (
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="text-xs text-red-400 hover:text-red-600 transition-colors disabled:opacity-50"
+            >
+              {deleting ? "削除中..." : "削除"}
+            </button>
+          )}
+          <ReportButton
+            targetType="review_comment"
+            targetId={comment.id}
+            authorId={comment.author_id}
+          />
+        </div>
       </div>
       <p className="text-gray-600 whitespace-pre-wrap">{comment.content}</p>
       {error && <p className="text-sm text-red-500 mt-1">{error}</p>}

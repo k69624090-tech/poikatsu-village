@@ -8,6 +8,7 @@ import StarRating from "@/components/StarRating";
 import ReviewActions from "@/components/ReviewActions";
 import ReviewCommentForm from "@/components/ReviewCommentForm";
 import ReviewCommentItem from "@/components/ReviewCommentItem";
+import ReportButton from "@/components/ReportButton";
 
 export default async function ReviewDetailPage({
   params,
@@ -92,7 +93,10 @@ export default async function ReviewDetailPage({
               {r.comment}
             </div>
 
-            <ReviewActions reviewId={r.id} authorId={r.author_id} />
+            <div className="flex items-center justify-between mt-6">
+              <ReviewActions reviewId={r.id} authorId={r.author_id} />
+              <ReportButton targetType="review" targetId={r.id} authorId={r.author_id} />
+            </div>
           </article>
 
           {/* コメントセクション */}

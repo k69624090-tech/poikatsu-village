@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { CATEGORY_COLORS, type Post, type Comment } from "@/lib/types";
 import CommentForm from "@/components/CommentForm";
 import PostActions from "@/components/PostActions";
+import ReportButton from "@/components/ReportButton";
 
 export default async function PostDetailPage({
   params,
@@ -83,8 +84,11 @@ export default async function PostDetailPage({
               {typedPost.content}
             </div>
 
-            {/* 編集・削除ボタン（自分の投稿のみ表示） */}
-            <PostActions postId={typedPost.id} authorId={typedPost.author_id} />
+            {/* 編集・削除・通報ボタン */}
+            <div className="flex items-center justify-between mt-6">
+              <PostActions postId={typedPost.id} authorId={typedPost.author_id} />
+              <ReportButton targetType="post" targetId={typedPost.id} authorId={typedPost.author_id} />
+            </div>
           </article>
 
           {/* コメントセクション */}
@@ -101,19 +105,22 @@ export default async function PostDetailPage({
                     key={comment.id}
                     className="bg-white rounded-xl shadow-sm p-4 border border-village-pink-100"
                   >
-                    <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
-                      <span>{comment.author_email || "匿名ユーザー"}</span>
-                      <span>
-                        {new Date(comment.created_at).toLocaleDateString(
-                          "ja-JP",
-                          {
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          }
-                        )}
-                      </span>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <span>{comment.author_email || "匿名ユーザー"}</span>
+                        <span>
+                          {new Date(comment.created_at).toLocaleDateString(
+                            "ja-JP",
+                            {
+                              month: "long",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          )}
+                        </span>
+                      </div>
+                      <ReportButton targetType="comment" targetId={comment.id} authorId={comment.author_id} />
                     </div>
                     <p className="text-gray-600 text-sm whitespace-pre-wrap">
                       {comment.content}
