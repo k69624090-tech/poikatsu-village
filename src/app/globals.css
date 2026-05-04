@@ -83,15 +83,15 @@ body {
    Animation Utility Classes
    ============================= */
 .animate-fade-in-up {
-  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease both;
+  animation: fadeIn 0.5s ease forwards;
 }
 
 .animate-scale-in {
-  animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-float {
@@ -115,17 +115,17 @@ body {
 .gradient-text-animated {
   background: linear-gradient(
     270deg,
-    #F43F5E,
+    #E11D48,
     #EC4899,
-    #A78BFA,
+    #9333EA,
     #EC4899,
-    #F43F5E
+    #E11D48
   );
-  background-size: 300% 300%;
+  background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradient-shift 6s ease infinite;
+  animation: gradient-shift 5s ease infinite;
 }
 
 /* =============================
