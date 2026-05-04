@@ -4,6 +4,7 @@ import "./globals.css";
 
 const geistSans = Geist({
   subsets: ["latin"],
+  variable: "--font-geist",
 });
 
 export const metadata: Metadata = {
@@ -18,7 +19,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${geistSans.className} h-full antialiased`}>
+    <html lang="ja" className={`${geistSans.variable} h-full antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

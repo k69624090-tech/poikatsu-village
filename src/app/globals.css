@@ -2,24 +2,175 @@
 
 @theme inline {
   /* ポイ活の村 カラーパレット */
-  --color-village-pink-50: #FDF2F8;
-  --color-village-pink-100: #FCE7F3;
-  --color-village-pink-200: #FBCFE8;
-  --color-village-pink-300: #F9A8D4;
-  --color-village-pink-400: #F472B6;
-  --color-village-pink-500: #EC4899;
-  --color-village-pink-600: #DB2777;
+  --color-village-pink-50: #FFF1F2;
+  --color-village-pink-100: #FFE4E6;
+  --color-village-pink-200: #FECDD3;
+  --color-village-pink-300: #FDA4AF;
+  --color-village-pink-400: #FB7185;
+  --color-village-pink-500: #F43F5E;
+  --color-village-pink-600: #E11D48;
 
-  --color-village-cream: #FFF7ED;
-  --color-village-coral: #FB923C;
+  --color-village-cream: #FFFBF0;
+  --color-village-coral: #FF6B6B;
   --color-village-purple: #C084FC;
+  --color-village-violet: #8B5CF6;
 
-  --font-sans: var(--font-geist-sans);
+  --font-sans: "Noto Sans JP", var(--font-geist), sans-serif;
   --font-mono: var(--font-geist-mono);
+}
+
+/* =============================
+   Base
+   ============================= */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: var(--color-village-pink-50);
-  color: #374151;
-  font-family: Arial, Helvetica, sans-serif;
+  color: #1f2937;
+  font-family: "Noto Sans JP", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =============================
+   Keyframe Animations
+   ============================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-14px) rotate(2deg); }
+  66%       { transform: translateY(-7px) rotate(-1deg); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-20px); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.90); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* =============================
+   Animation Utility Classes
+   ============================= */
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 9s ease-in-out infinite;
+}
+
+/* =============================
+   Gradient Utilities
+   ============================= */
+.gradient-text {
+  background: linear-gradient(135deg, #F43F5E 0%, #EC4899 55%, #A78BFA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-animated {
+  background: linear-gradient(
+    270deg,
+    #F43F5E,
+    #EC4899,
+    #A78BFA,
+    #EC4899,
+    #F43F5E
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* =============================
+   Glass Morphism
+   ============================= */
+.glass {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* =============================
+   Card Hover Effect
+   ============================= */
+.card-hover {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.28s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 40px rgba(244, 63, 94, 0.10),
+    0 6px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* =============================
+   Primary Button
+   ============================= */
+.btn-primary {
+  background: linear-gradient(135deg, #F43F5E 0%, #EC4899 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.38);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(244, 63, 94, 0.48);
+}
+
+/* =============================
+   Section Background
+   ============================= */
+.section-bg {
+  background: linear-gradient(180deg, #FFF1F2 0%, #ffffff 100%);
 }

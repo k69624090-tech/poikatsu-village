@@ -171,15 +171,15 @@ export default async function ReviewsPage({
           {/* レビュー一覧 */}
           {reviews && reviews.length > 0 ? (
             <>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {reviews.map((review: Review) => (
                   <Link
                     key={review.id}
                     href={`/reviews/${review.id}`}
-                    className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-5 border border-village-pink-100"
+                    className="group block bg-white rounded-2xl shadow-sm p-5 border border-village-pink-100 card-hover"
                   >
                     <div className="flex items-start justify-between gap-4 mb-2">
-                      <h2 className="text-lg font-bold text-gray-700">
+                      <h2 className="text-base font-bold text-gray-800 group-hover:text-village-pink-600 transition-colors">
                         {review.case_name}
                       </h2>
                       <span className="text-sm font-medium text-village-pink-600 truncate max-w-[8rem] sm:max-w-none">

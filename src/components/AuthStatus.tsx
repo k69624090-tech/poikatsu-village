@@ -14,13 +14,11 @@ export default function AuthStatus() {
   useEffect(() => {
     const supabase = createClient();
 
-    // 現在のユーザーを取得
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
       setLoading(false);
     });
 
-    // 認証状態の変化を監視
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -36,19 +34,17 @@ export default function AuthStatus() {
     router.refresh();
   };
 
-  if (loading) {
-    return null;
-  }
+  if (loading) return null;
 
   if (user) {
     return (
-      <div className="flex items-center gap-3">
-        <span className="text-xs text-gray-500 hidden sm:inline">
+      <div className="flex items-center gap-2.5">
+        <span className="text-xs text-gray-400 hidden sm:inline truncate max-w-[120px]">
           {user.email}
         </span>
         <button
           onClick={handleLogout}
-          className="text-xs bg-village-pink-100 text-village-pink-600 hover:bg-village-pink-200 rounded-md px-3 py-1 transition-colors"
+          className="text-xs bg-village-pink-50 text-village-pink-500 hover:bg-village-pink-100 border border-village-pink-200 rounded-full px-3 py-1.5 transition-colors duration-200"
         >
           ログアウト
         </button>
@@ -59,7 +55,7 @@ export default function AuthStatus() {
   return (
     <Link
       href="/login"
-      className="text-sm bg-village-pink-500 text-white hover:bg-village-pink-600 rounded-full px-4 py-1.5 transition-colors"
+      className="btn-primary text-sm rounded-full px-5 py-1.5 font-medium"
     >
       ログイン
     </Link>

@@ -131,12 +131,12 @@ export default async function BoardPage({
           {/* 投稿一覧 */}
           {posts && posts.length > 0 ? (
             <>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {posts.map((post: Post) => (
                   <Link
                     key={post.id}
                     href={`/board/${post.id}`}
-                    className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-5 border border-village-pink-100"
+                    className="group block bg-white rounded-2xl shadow-sm p-5 border border-village-pink-100 card-hover"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <span
@@ -150,10 +150,10 @@ export default async function BoardPage({
                         {new Date(post.created_at).toLocaleDateString("ja-JP")}
                       </span>
                     </div>
-                    <h2 className="text-lg font-bold text-gray-700 mb-1">
+                    <h2 className="text-base font-bold text-gray-800 mb-1 group-hover:text-village-pink-600 transition-colors">
                       {post.title}
                     </h2>
-                    <p className="text-sm text-gray-500 line-clamp-2">
+                    <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
                       {post.content}
                     </p>
                     <p className="text-xs text-gray-400 mt-2">
