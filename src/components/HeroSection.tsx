@@ -3,19 +3,19 @@ import Link from "next/link";
 export default function HeroSection() {
   return (
     <section className="relative overflow-hidden py-24 px-4 md:py-32">
-      {/* 背景グラデーション */}
-      <div className="absolute inset-0 bg-gradient-to-br from-village-pink-50 via-white to-purple-50" />
+      {/* 背景グラデーション（クリック無効） */}
+      <div className="absolute inset-0 bg-gradient-to-br from-village-pink-50 via-white to-purple-50 pointer-events-none" />
 
-      {/* 装飾ブロブ */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-village-pink-200/40 rounded-full blur-3xl" />
-      <div className="absolute -bottom-32 -right-16 w-[28rem] h-[28rem] bg-village-purple/20 rounded-full blur-3xl" />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-village-pink-300/20 rounded-full blur-2xl" />
+      {/* 装飾ブロブ（クリック無効） */}
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-village-pink-200/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -right-16 w-[28rem] h-[28rem] bg-village-purple/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-village-pink-300/20 rounded-full blur-2xl pointer-events-none" />
 
-      {/* フローティング装飾 */}
-      <div className="absolute top-16 left-[8%] text-3xl animate-float opacity-60 select-none">✨</div>
-      <div className="absolute top-20 right-[10%] text-2xl animate-float-slow opacity-50 select-none" style={{ animationDelay: "1.5s" }}>💰</div>
-      <div className="absolute bottom-20 left-[12%] text-2xl animate-float opacity-50 select-none" style={{ animationDelay: "3s" }}>🎁</div>
-      <div className="absolute bottom-16 right-[8%] text-3xl animate-float-slow opacity-40 select-none" style={{ animationDelay: "0.8s" }}>⭐</div>
+      {/* フローティング装飾（クリック無効） */}
+      <div className="absolute top-16 left-[8%] text-3xl animate-float opacity-60 select-none pointer-events-none">✨</div>
+      <div className="absolute top-20 right-[10%] text-2xl animate-float-slow opacity-50 select-none pointer-events-none" style={{ animationDelay: "1.5s" }}>💰</div>
+      <div className="absolute bottom-20 left-[12%] text-2xl animate-float opacity-50 select-none pointer-events-none" style={{ animationDelay: "3s" }}>🎁</div>
+      <div className="absolute bottom-16 right-[8%] text-3xl animate-float-slow opacity-40 select-none pointer-events-none" style={{ animationDelay: "0.8s" }}>⭐</div>
 
       {/* メインコンテンツ */}
       <div className="relative max-w-3xl mx-auto text-center">

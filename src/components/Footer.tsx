@@ -10,9 +10,9 @@ const links = [
 export default function Footer() {
   return (
     <footer className="relative overflow-hidden bg-white border-t border-village-pink-100 py-10 px-4 mt-auto">
-      {/* 装飾 */}
-      <div className="absolute bottom-0 left-0 w-64 h-32 bg-village-pink-50 rounded-full blur-3xl opacity-60 -translate-x-1/2 translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-64 h-32 bg-violet-50 rounded-full blur-3xl opacity-60 translate-x-1/2 translate-y-1/2" />
+      {/* 装飾（クリック無効） */}
+      <div className="absolute bottom-0 left-0 w-64 h-32 bg-village-pink-50 rounded-full blur-3xl opacity-60 -translate-x-1/2 translate-y-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-64 h-32 bg-violet-50 rounded-full blur-3xl opacity-60 translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto text-center">
         {/* ロゴ */}
